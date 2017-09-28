@@ -85,11 +85,11 @@ class SimpleRNN:
 
         costs = []
         n_total = sum((len(sentence)+1) for sentence in X)
-        for i in xrange(epochs):
+        for i in range(epochs):
             X = shuffle(X)
             n_correct = 0
             cost = 0
-            for j in xrange(N):
+            for j in range(N):
                 # problem! many words --> END token are overrepresented
                 # result: generated lines will be very short
                 # we will try to fix in a later iteration
@@ -105,7 +105,8 @@ class SimpleRNN:
                 for pj, xj in zip(p, output_sequence):
                     if pj == xj:
                         n_correct += 1
-            print "i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total)
+            if (i+1) % 10 == 0:
+                print("i:", i+1, "cost:", cost, "correct rate:", (float(n_correct)/n_total))
             costs.append(cost)
 
         if show_fig:
@@ -170,17 +171,20 @@ class SimpleRNN:
             allow_input_downcast=True,
         )
 
-    def generate(self, pi, word2idx):
+    def generate(self, pi, word2idx, word=None):
         # convert word2idx -> idx2word
-        idx2word = {v:k for k,v in word2idx.iteritems()}
+        idx2word = {v:k for k,v in word2idx.items()}
         V = len(pi)
 
         # generate 4 lines at a time
         n_lines = 0
 
         # why? because using the START symbol will always yield the same first word!
-        X = [ np.random.choice(V, p=pi) ]
-        print idx2word[X[0]],
+        if word and word2idx.get(word):
+            X = [word2idx[word]]
+        else:
+            X = [ np.random.choice(V, p=pi) ]
+        print(idx2word[X[0]],)
 
         while n_lines < 4:
             # print "X:", X
@@ -189,26 +193,26 @@ class SimpleRNN:
             if P > 1:
                 # it's a real word, not start/end token
                 word = idx2word[P]
-                print word,
+                print(word)
             elif P == 1:
                 # end token
                 n_lines += 1
-                print ''
+                print('')
                 if n_lines < 4:
                     X = [ np.random.choice(V, p=pi) ] # reset to start of line
-                    print idx2word[X[0]],
+                    print(idx2word[X[0]],)
 
 
-def train_poetry():
+def train_poetry(epochs=200, learning_rate=10e-5, mu=0.9, show_fig=True):
     # students: tanh didn't work but you should try it
     sentences, word2idx = get_robert_frost()
     rnn = SimpleRNN(30, 30, len(word2idx))
-    rnn.fit(sentences, learning_rate=10e-5, show_fig=True, activation=T.nnet.relu, epochs=2000)
-    rnn.save('RNN_D30_M30_epochs2000_relu.npz')
+    rnn.fit(sentences, learning_rate=learning_rate, mu=mu, show_fig=show_fig, activation=T.nnet.relu, epochs=epochs)
+    rnn.save('RNN_D30_M30_epochs{}_relu.npz'.format(epochs))
 
-def generate_poetry():
+def generate_poetry(epochs):
     sentences, word2idx = get_robert_frost()
-    rnn = SimpleRNN.load('RNN_D30_M30_epochs2000_relu.npz', T.nnet.relu)
+    rnn = SimpleRNN.load('RNN_D30_M30_epochs{}_relu.npz'.format(epochs), T.nnet.relu)
 
     # determine initial state distribution for starting sentences
     V = len(word2idx)
@@ -221,13 +225,13 @@ def generate_poetry():
 
 def wikipedia():
     sentences, word2idx = get_wikipedia_data()
-    print "finished retrieving data"
-    print "vocab size:", len(word2idx), "number of sentences:", len(sentences)
+    print("finished retrieving data")
+    print("vocab size:", len(word2idx), "number of sentences:", len(sentences))
     rnn = SimpleRNN(20, 15, len(word2idx))
     rnn.fit(sentences, learning_rate=10e-5, show_fig=True, activation=T.nnet.relu)
 
 if __name__ == '__main__':
-    # train_poetry()
+    train_poetry()
     generate_poetry()
     # wikipedia()
 
