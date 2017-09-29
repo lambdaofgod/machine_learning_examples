@@ -31,7 +31,7 @@ def get_sentences_with_word2idx():
       indexed_sentence.append(word2idx[token])
     indexed_sentences.append(indexed_sentence)
 
-  print "Vocab size:", i
+  print("Vocab size:", i)
   return indexed_sentences, word2idx
 
 

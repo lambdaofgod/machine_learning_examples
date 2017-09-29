@@ -56,12 +56,12 @@ class SimpleRNN:
         )
 
         costs = []
-        for i in xrange(epochs):
+        for i in range(epochs):
             X = shuffle(X)
             n_correct = 0
             n_total = 0
             cost = 0
-            for j in xrange(N):
+            for j in range(N):
                 if np.random.random() < 0.1:
                     input_sequence = [0] + X[j]
                     output_sequence = X[j] + [1]
@@ -78,7 +78,7 @@ class SimpleRNN:
                 for pj, xj in zip(p, output_sequence):
                     if pj == xj:
                         n_correct += 1
-            print "i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total)
+            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total))
             if (i + 1) % 500 == 0:
                 learning_rate /= 2
             costs.append(cost)
@@ -176,12 +176,12 @@ class SimpleRNN:
             if P > 1:
                 # it's a real word, not start/end token
                 word = idx2word[P]
-                print word,
+                print(word,)
             elif P == 1:
                 # end token
                 n_lines += 1
                 X = [0]
-                print ''
+                print('')
 
 
 def train_poetry():

@@ -18,7 +18,7 @@ class SimpleRNN:
         M = self.M
         V = self.V
         K = len(set(Y))
-        print "V:", V
+        print("V:", V)
 
         X, Y = shuffle(X, Y)
         Nvalid = 10
@@ -55,11 +55,11 @@ class SimpleRNN:
         )
 
         costs = []
-        for i in xrange(epochs):
+        for i in range(epochs):
             X, Y = shuffle(X, Y)
             n_correct = 0
             cost = 0
-            for j in xrange(N):
+            for j in range(N):
                 # we set 0 to start and 1 to end
                 # print "X[%d]:" % j, X[j], "len:", len(X[j])
                 c, p = self.train_op(X[j], Y[j], learning_rate)
@@ -72,12 +72,12 @@ class SimpleRNN:
 
             # calculate validation accuracy
             n_correct_valid = 0
-            for j in xrange(Nvalid):
+            for j in range(Nvalid):
                 p = self.predict_op(Xvalid[j])
                 if p == Yvalid[j]:
                     n_correct_valid += 1
-            print "i:", i, "cost:", cost, "correct rate:", (float(n_correct)/N),
-            print "validation correct rate:", (float(n_correct_valid)/Nvalid)
+            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/N),)
+            print("validation correct rate:", (float(n_correct_valid)/Nvalid))
             costs.append(cost)
 
         if show_fig:
