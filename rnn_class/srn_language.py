@@ -10,6 +10,10 @@ from util import init_weight, get_robert_frost, get_wikipedia_data
 
 
 class SimpleRNN:
+    
+    SENTENCE_START = 0
+    SENTENCE_END = 1
+    
     def __init__(self, D, M, V):
         self.D = D # dimensionality of word embedding
         self.M = M # hidden layer size
@@ -83,7 +87,8 @@ class SimpleRNN:
             updates=updates
         )
 
-        costs = []
+        self.costs = []
+        self.correct_rates = []
         n_total = sum((len(sentence)+1) for sentence in X)
         for i in range(epochs):
             X = shuffle(X)
@@ -93,9 +98,8 @@ class SimpleRNN:
                 # problem! many words --> END token are overrepresented
                 # result: generated lines will be very short
                 # we will try to fix in a later iteration
-                # BAD! magic numbers 0 and 1...
-                input_sequence = [0] + X[j]
-                output_sequence = X[j] + [1]
+                input_sequence = [SimpleRNN.SENTENCE_START] + X[j]
+                output_sequence = X[j] + [SimpleRNN.SENTENCE_END]
 
                 # we set 0 to start and 1 to end
                 c, p = self.train_op(input_sequence, output_sequence)
@@ -105,12 +109,15 @@ class SimpleRNN:
                 for pj, xj in zip(p, output_sequence):
                     if pj == xj:
                         n_correct += 1
+            
+            correct_rate = n_correct / n_total
             if (i+1) % 10 == 0:
-                print("i:", i+1, "cost:", cost, "correct rate:", (float(n_correct)/n_total))
-            costs.append(cost)
+                print("i:", i+1, "cost:", cost, "correct rate:", correct_rate)
+            self.costs.append(cost)
+            self.correct_rates.append(correct_rate)
 
         if show_fig:
-            plt.plot(costs)
+            plt.plot(self.costs)
             plt.show()
     
     def save(self, filename):
@@ -171,19 +178,22 @@ class SimpleRNN:
             allow_input_downcast=True,
         )
 
-    def generate(self, pi, word2idx, word=None):
+    def generate(self, pi, word2idx, words=None):
+        def start_word(words, n_lines):
+            if words and word2idx.get(words[n_lines]):
+                word = words[n_lines]
+                return [word2idx[word]]
+            else:
+                return [ np.random.choice(V, p=pi) ]
         # convert word2idx -> idx2word
         idx2word = {v:k for k,v in word2idx.items()}
         V = len(pi)
-
+        
         # generate 4 lines at a time
         n_lines = 0
 
         # why? because using the START symbol will always yield the same first word!
-        if word and word2idx.get(word):
-            X = [word2idx[word]]
-        else:
-            X = [ np.random.choice(V, p=pi) ]
+        X = start_word(words, n_lines)
         print(idx2word[X[0]],)
 
         while n_lines < 4:
@@ -194,12 +204,12 @@ class SimpleRNN:
                 # it's a real word, not start/end token
                 word = idx2word[P]
                 print(word)
-            elif P == 1:
+            elif P == SimpleRNN.SENTENCE_END:
                 # end token
                 n_lines += 1
                 print('')
                 if n_lines < 4:
-                    X = [ np.random.choice(V, p=pi) ] # reset to start of line
+                    X = start_word(words, n_lines) # reset to start of line
                     print(idx2word[X[0]],)
 
 
