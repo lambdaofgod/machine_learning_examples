@@ -98,8 +98,8 @@ def train_wikipedia(we_file='lstm_word_embeddings.npy', w2i_file='lstm_wikipedia
     # sentences, word2idx = get_wikipedia_data(n_files=100, n_vocab=2000)
     sentences, word2idx = get_sentences_with_word2idx_limit_vocab()
 
-    print "finished retrieving data"
-    print "vocab size:", len(word2idx), "number of sentences:", len(sentences)
+    print("finished retrieving data")
+    print("vocab size:", len(word2idx), "number of sentences:", len(sentences))
     rnn = RNN(50, [50], len(word2idx))
     # todo: next try increas LR
     rnn.fit(sentences, learning_rate=10e-6, epochs=10, show_fig=True, activation=T.nnet.relu, RecurrentUnit=LSTM, normalize=False)

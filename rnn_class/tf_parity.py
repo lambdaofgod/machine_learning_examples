@@ -90,23 +90,23 @@ class SimpleRNN:
     init = tf.global_variables_initializer()
     with tf.Session() as session:
       session.run(init)
-      for i in xrange(epochs):
+      for i in range(epochs):
         X, Y = shuffle(X, Y)
         n_correct = 0
         cost = 0
-        for j in xrange(n_batches):
+        for j in range(n_batches):
           Xbatch = X[j*batch_sz:(j+1)*batch_sz]
           Ybatch = Y[j*batch_sz:(j+1)*batch_sz]
           
           _, c, p = session.run([train_op, cost_op, predict_op], feed_dict={tfX: Xbatch, tfY: Ybatch})
           cost += c
-          for b in xrange(batch_sz):
+          for b in range(batch_sz):
             idx = (b + 1)*T - 1
             n_correct += (p[idx] == Ybatch[b][-1])
         if i % 10 == 0:
-          print "i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N)
+          print("i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N))
         if n_correct == N:
-          print "i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N)
+          print("i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N))
           break
         costs.append(cost)
 

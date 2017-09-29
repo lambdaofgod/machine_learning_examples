@@ -70,16 +70,16 @@ class SimpleRNN:
             session.run(init)
 
             costs = []
-            for i in xrange(epochs):
+            for i in range(epochs):
                 X, Y = shuffle(X, Y)
                 n_correct = 0
                 batch_cost = 0
-                for j in xrange(N):
+                for j in range(N):
                     _, c, p = session.run([train_op, cost, predict_op], feed_dict={tfX: X[j].reshape(T, D), tfY: Y[j]})
                     batch_cost += c
                     if p[-1] == Y[j,-1]:
                         n_correct += 1
-                print "i:", i, "cost:", batch_cost, "classification rate:", (float(n_correct)/N)
+                print("i:", i, "cost:", batch_cost, "classification rate:", (float(n_correct)/N))
                 costs.append(batch_cost)
                 if n_correct == N:
                     break

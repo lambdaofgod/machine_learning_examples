@@ -16,7 +16,7 @@ def main(we_file='word_embeddings.npy', w2i_file='wikipedia_word2idx.json', Mode
     model = Model()
     Z = model.fit_transform(We)
     plt.scatter(Z[:,0], Z[:,1])
-    for i in xrange(V):
+    for i in range(V):
         plt.annotate(s=idx2word[i], xy=(Z[i,0], Z[i,1]))
     plt.show()
 

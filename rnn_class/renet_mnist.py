@@ -24,7 +24,7 @@ def relu(a):
 def y2indicator(y):
     N = len(y)
     ind = np.zeros((N, 10))
-    for i in xrange(N):
+    for i in range(N):
         ind[i, y[i]] = 1
     return ind
 
@@ -37,7 +37,7 @@ def init_filter(shape):
 def rearrange(X):
     N = len(X)
     out = np.zeros((N, 1, 28, 28), dtype=np.float32)
-    for i in xrange(N):
+    for i in range(N):
         out[i, 0, :, :] = X[i].reshape(28, 28)
     return out / 255
 
@@ -53,7 +53,7 @@ def renet_layer_lr(X, Wx, Wh, Wo, Bh, Bo, H0, w, h, wp, hp):
     list_of_images = []
     # lefts = []
     # rights = []
-    for i in xrange(h/hp):
+    for i in range(h/hp):
         x = X[:,i*hp:(i*hp + hp),:].dimshuffle((1, 0, 2)).flatten().reshape((w/wp, X.shape[0]*wp*hp))
         # reshape the row into a 2-D matrix to be fed into scan
         [h1, s1], _ = theano.scan(
@@ -86,7 +86,7 @@ def renet_layer_ud(X, Wx, Wh, Wo, Bh, Bo, H0, w, h, wp, hp):
         return [h_t, s_t]
 
     list_of_images = []
-    for j in xrange(w/wp):
+    for j in range(w/wp):
         # x = X[:,:,j*wp:(j*wp + wp)].dimshuffle((2, 0, 1)).flatten(ndim=2)
         # reshape the row into a 2-D matrix to be fed into scan
         x = X[:,:,j*wp:(j*wp + wp)].dimshuffle((2, 0, 1)).flatten().reshape((h/hp, X.shape[0]*wp*hp))
@@ -316,13 +316,13 @@ def main():
         outputs=[cost, prediction],
     )
 
-    print "Setup elapsed time:", (datetime.now() - t0)
+    print("Setup elapsed time:", (datetime.now() - t0))
     t0 = datetime.now()
     LL = []
     t1 = t0
-    for i in xrange(max_iter):
-        print "i:", i
-        for j in xrange(N):
+    for i in range(max_iter):
+        print("i:", i)
+        for j in range(N):
             # print "j:", j
             Xbatch = Xtrain[j,:]
             Ybatch = Ytrain_ind[j:j+1,:]
@@ -331,17 +331,17 @@ def main():
             if j % print_period == 0:
                 cost_val = 0
                 prediction_val = np.zeros(100)
-                for k in xrange(100):
+                for k in range(100):
                     c, p = get_prediction(Xtest[k], Ytest_ind[k:k+1,:])
                     cost_val += c
                     prediction_val[k] = p
                 err = error_rate(prediction_val, Ytest)
-                print "Cost / err at iteration i=%d, j=%d: %.3f / %.2f" % (i, j, cost_val / len(Ytest), err)
+                print("Cost / err at iteration i=%d, j=%d: %.3f / %.2f" % (i, j, cost_val / len(Ytest), err))
                 t2 = datetime.now()
-                print "Time since last print:", (t2 - t1)
+                print("Time since last print:", (t2 - t1))
                 t1 = t2
                 LL.append(cost_val)
-    print "Elapsed time:", (datetime.now() - t0)
+    print("Elapsed time:", (datetime.now() - t0))
     plt.plot(LL)
     plt.show()
 

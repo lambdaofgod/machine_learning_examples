@@ -32,7 +32,7 @@ def relu(a):
 def y2indicator(y):
     N = len(y)
     ind = np.zeros((N, 10), dtype='int32')
-    for i in xrange(N):
+    for i in range(N):
         ind[i, y[i]] = 1
     return ind
 
@@ -45,7 +45,7 @@ def init_filter(shape):
 def rearrange(X):
     N = len(X)
     out = np.zeros((N, 1, 28, 28), dtype=np.float32)
-    for i in xrange(N):
+    for i in range(N):
         out[i, 0, :, :] = X[i].reshape(28, 28)
     return out / 255
 
@@ -143,13 +143,13 @@ class RNNUnit(object):
 
 def renet_layer_lr_noscan(X, rnn1, rnn2, w, h, wp, hp):
     list_of_images = []
-    for i in xrange(h/hp):
+    for i in range(h/hp):
         # x = X[:,i*hp:(i*hp + hp),:].dimshuffle((2, 0, 1)).flatten().reshape((w/wp, X.shape[0]*wp*hp))
         h_tm1 = rnn1.H0
         hr_tm1 = rnn2.H0
         h1 = []
         h2 = []
-        for j in xrange(w/wp):
+        for j in range(w/wp):
             x = X[:,i*hp:(i*hp + hp),j*wp:(j*wp + wp)].flatten()
             h_t = rnn1.recurrence(x, h_tm1)
             h1.append(h_t)
@@ -207,7 +207,7 @@ def renet_layer_lr(X, rnn1, rnn2, w, h, wp, hp):
     list_of_images = []
     # lefts = []
     # rights = []
-    for i in xrange(h/hp):
+    for i in range(h/hp):
         x = X[:,i*hp:(i*hp + hp),:].dimshuffle((2, 0, 1)).flatten().reshape((w/wp, X.shape[0]*wp*hp))
         # reshape the row into a 2-D matrix to be fed into scan
         # h1, _ = theano.scan(
@@ -246,7 +246,7 @@ def renet_layer_ud(X, rnn1, rnn2, w, h, wp, hp):
     #     return h_t
 
     list_of_images = []
-    for j in xrange(w/wp):
+    for j in range(w/wp):
         # x = X[:,:,j*wp:(j*wp + wp)].dimshuffle((2, 0, 1)).flatten(ndim=2)
         # reshape the row into a 2-D matrix to be fed into scan
         x = X[:,:,j*wp:(j*wp + wp)].dimshuffle((2, 0, 1)).flatten().reshape((h/hp, X.shape[0]*wp*hp))
@@ -329,7 +329,7 @@ def getMNIST():
 
 def main(ReUnit=RNNUnit, getData=getMNIST):
     t0 = datetime.now()
-    print "Start time:", t0
+    print("Start time:", t0)
     
     Xtrain, Ytrain, Ytrain_ind, Xtest, Ytest, Ytest_ind = getData()
 
@@ -364,7 +364,7 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
     rnn7 = ReUnit('7', 1, 1, 2*M3, M4)
     rnn8 = ReUnit('8', 1, 1, 2*M3, M4)
 
-    print "Finished creating rnn objects, elapsed time:", (datetime.now() - t0)
+    print("Finished creating rnn objects, elapsed time:", (datetime.now() - t0))
 
 
     # vanilla ANN weights
@@ -388,7 +388,7 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
         params += rnn.params
 
 
-    print "Finished creating all shared vars, elapsed time:", (datetime.now() - t0)
+    print("Finished creating all shared vars, elapsed time:", (datetime.now() - t0))
     # momentum changes
     # dW1 = theano.shared(np.zeros(W1_init.shape, dtype=np.float32), 'dW1')
     # db1 = theano.shared(np.zeros(b1_init.shape, dtype=np.float32), 'db1')
@@ -433,10 +433,10 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
     else:
         batch_forward_out3 = forward(X[0])
 
-    print "Finished creating output scan, elapsed time:", (datetime.now() - t0)
+    print("Finished creating output scan, elapsed time:", (datetime.now() - t0))
     batch_forward_out = batch_forward_out3.flatten(ndim=2) # the output will be (N, 1, 10)
 
-    print "Finished reshaping output, elapsed time:", (datetime.now() - t0)
+    print("Finished reshaping output, elapsed time:", (datetime.now() - t0))
 
     ## TMP: just test the first/second layer ##
     # tmp_op = theano.function(
@@ -492,7 +492,7 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
     # step 3: training expressions and functions
     updates = [(param, param - lr*T.grad(cost, param)) for param in params]
 
-    print "Finished creating update expressions, elapsed time:", (datetime.now() - t0)
+    print("Finished creating update expressions, elapsed time:", (datetime.now() - t0))
 
     # update weight changes
     # update_dW1 = mu*dW1 - lr*T.grad(cost, W1)
@@ -517,7 +517,7 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
         allow_input_downcast=True,
     )
 
-    print "Setup elapsed time:", (datetime.now() - t0)
+    print("Setup elapsed time:", (datetime.now() - t0))
 
     # test it
     # print get_prediction(Xtest, Ytest_ind)
@@ -526,9 +526,9 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
     t0 = datetime.now()
     LL = []
     t1 = t0
-    for i in xrange(max_iter):
-        print "i:", i
-        for j in xrange(n_batches):
+    for i in range(max_iter):
+        print("i:", i)
+        for j in range(n_batches):
             # print "j:", j
             Xbatch = Xtrain[j*batch_sz:(j*batch_sz + batch_sz),:]
             Ybatch = Ytrain_ind[j*batch_sz:(j*batch_sz + batch_sz),:]
@@ -538,18 +538,18 @@ def main(ReUnit=RNNUnit, getData=getMNIST):
                 cost_val, prediction_val = get_prediction(Xtest, Ytest_ind)
                 # cost_val = 0
                 # prediction_val = np.zeros(len(Ytest))
-                # for k in xrange(len(Ytest)):
+                # for k in range(len(Ytest)):
                 #     c, p = get_prediction(Xtest[k], Ytest_ind[k:k+1,:])
                 #     cost_val += c
                 #     prediction_val[k] = p[0]
                 #     # print "pred:", p[0], type(p[0]), "target:", Ytest[k], type(Ytest[k])
                 err = error_rate(prediction_val, Ytest)
-                print "Cost / err at iteration i=%d, j=%d: %.3f / %.2f" % (i, j, cost_val / len(Ytest), err)
+                print("Cost / err at iteration i=%d, j=%d: %.3f / %.2f" % (i, j, cost_val / len(Ytest), err))
                 t2 = datetime.now()
-                print "Time since last print:", (t2 - t1)
+                print("Time since last print:", (t2 - t1))
                 t1 = t2
                 LL.append(cost_val)
-    print "Elapsed time:", (datetime.now() - t0)
+    print("Elapsed time:", (datetime.now() - t0))
     plt.plot(LL)
     plt.show()
 

@@ -114,30 +114,30 @@ class SimpleRNN:
         # if each sequence was of variable length, we would need to
         # initialize this inside the loop for every new batch
         startPoints = np.zeros(sequenceLength*batch_sz, dtype=np.int32)
-        for b in xrange(batch_sz):
+        for b in range(batch_sz):
             startPoints[b*sequenceLength] = 1
-        for i in xrange(epochs):
+        for i in range(epochs):
             X, Y = shuffle(X, Y)
             n_correct = 0
             cost = 0
-            for j in xrange(n_batches):
+            for j in range(n_batches):
                 Xbatch = X[j*batch_sz:(j+1)*batch_sz].reshape(sequenceLength*batch_sz, D)
                 Ybatch = Y[j*batch_sz:(j+1)*batch_sz].reshape(sequenceLength*batch_sz).astype(np.int32)
                 c, p, rout = self.train_op(Xbatch, Ybatch, startPoints)
                 # print "p:", p
                 cost += c
                 # P = p.reshape(batch_sz, sequenceLength)
-                for b in xrange(batch_sz):
+                for b in range(batch_sz):
                     idx = sequenceLength*(b + 1) - 1
                     if p[idx] == Ybatch[idx]:
                         n_correct += 1
                     # else:
                         # print "pred:", p[idx], "actual:", Ybatch[idx]
             if i % 10 == 0:
-                print "shape y:", rout.shape
-                print "i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N)
+                print("shape y:", rout.shape)
+                print("i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N))
             if n_correct == N:
-                print "i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N)
+                print("i:", i, "cost:", cost, "classification rate:", (float(n_correct)/N))
                 break
             costs.append(cost)
 
