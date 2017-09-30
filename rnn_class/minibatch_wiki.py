@@ -20,7 +20,7 @@ class RNN:
         self.D = D
         self.V = V
 
-    def fit(self, X, learning_rate=1e-4, mu=0.99, epochs=10, batch_sz=100, show_fig=True, activation=T.nnet.relu, RecurrentUnit=GRU):
+    def fit(self, X, learning_rate=1e-5, mu=0.99, epochs=10, batch_sz=1000, show_fig=True, activation=T.nnet.relu, RecurrentUnit=GRU):
         D = self.D
         V = self.V
         N = len(X)
@@ -71,7 +71,6 @@ class RNN:
         )
 
         costs = []
-        n_batches = N // batch_sz
         for i in range(epochs):
             t0 = datetime.now()
             X = shuffle(X)
@@ -79,43 +78,43 @@ class RNN:
             n_total = 0
             cost = 0
 
-            for j in range(n_batches):
-                # construct input sequence and output sequence as
-                # concatenatation of multiple input sequences and output sequences
-                # input X should be a list of 2-D arrays or one 3-D array
-                # N x T(n) x D - batch size x sequence length x num features
-                # sequence length can be variable
-                sequenceLengths = []
-                input_sequence = []
-                output_sequence = []
-                for k in range(j*batch_sz, (j+1)*batch_sz):
-                    # don't always add the end token
-                    if np.random.random() < 0.01 or len(X[k]) <= 1:
-                        input_sequence += [0] + X[k]
-                        output_sequence += X[k] + [1]
-                        sequenceLengths.append(len(X[k]) + 1)
-                    else:
-                        input_sequence += [0] + X[k][:-1]
-                        output_sequence += X[k]
-                        sequenceLengths.append(len(X[k]))
-                n_total += len(output_sequence)
+            # construct input sequence and output sequence as
+            # concatenatation of multiple input sequences and output sequences
+            # input X should be a list of 2-D arrays or one 3-D array
+            # N x T(n) x D - batch size x sequence length x num features
+            # sequence length can be variable
+            sequenceLengths = []
+            input_sequence = []
+            output_sequence = []
+            for k in range(batch_sz):
+                # don't always add the end token
+                if np.random.random() < 0.01 or len(X[k]) <= 1:
+                    input_sequence += [0] + X[k]
+                    output_sequence += X[k] + [1]
+                    sequenceLengths.append(len(X[k]) + 1)
+                else:
+                    input_sequence += [0] + X[k][:-1]
+                    output_sequence += X[k]
+                    sequenceLengths.append(len(X[k]))
+            n_total += len(output_sequence)
 
-                startPoints = np.zeros(len(output_sequence), dtype=np.int32)
-                last = 0
-                for length in sequenceLengths:
-                  startPoints[last] = 1
-                  last += length
+            startPoints = np.zeros(len(output_sequence), dtype=np.int32)
+            last = 0
+            for length in sequenceLengths:
+              startPoints[last] = 1
+              last += length
 
-                c, p = self.train_op(input_sequence, output_sequence, startPoints)
-                cost += c
-                for pj, xj in zip(p, output_sequence):
-                    if pj == xj:
-                        n_correct += 1
-                if j % 1 == 0:
-                    sys.stdout.write("j/n_batches: %d/%d correct rate so far: %f\r" % (j, n_batches, float(n_correct)/n_total))
-                    sys.stdout.flush()
-            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
+            c, p = self.train_op(input_sequence, output_sequence, startPoints)
+            cost += c
+            for pj, xj in zip(p, output_sequence):
+                if pj == xj:
+                    n_correct += 1
+
+            if (i % 10 == 0):
+                print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
             costs.append(cost)
+
+        print("final cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
 
         if show_fig:
             plt.plot(costs)
@@ -123,7 +122,7 @@ class RNN:
 
 
 
-def train_wikipedia(we_file='word_embeddings.npy', w2i_file='wikipedia_word2idx.json', RecurrentUnit=GRU):
+def train_wikipedia(we_file='word_embeddings.npy', w2i_file='wikipedia_word2idx.json', RecurrentUnit=GRU, **kwargs):
     # there are 32 files
     ### note: you can pick between Wikipedia data and Brown corpus
     ###       just comment one out, and uncomment the other!
@@ -132,7 +131,7 @@ def train_wikipedia(we_file='word_embeddings.npy', w2i_file='wikipedia_word2idx.
     print("finished retrieving data")
     print("vocab size:", len(word2idx), "number of sentences:", len(sentences))
     rnn = RNN(30, [30], len(word2idx))
-    rnn.fit(sentences, learning_rate=2*1e-4, epochs=10, show_fig=True, activation=T.nnet.relu)
+    rnn.fit(sentences, show_fig=True, activation=T.nnet.relu, **kwargs)
 
     np.save(we_file, rnn.We.get_value())
     with open(w2i_file, 'w') as f:
