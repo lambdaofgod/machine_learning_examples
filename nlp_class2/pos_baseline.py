@@ -59,7 +59,7 @@ class LogisticRegression:
         )
 
         costs = []
-        n_batches = N / batch_sz
+        n_batches = N // batch_sz
         for i in range(epochs):
             X, Y = shuffle(X, Y)
             print("epoch:", i)

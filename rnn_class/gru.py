@@ -4,7 +4,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-from util import init_weight
+from nlp_class2.util import init_weight
 
 
 class GRU:
