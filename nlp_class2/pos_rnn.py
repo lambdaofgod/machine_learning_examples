@@ -9,9 +9,9 @@ import os
 import sys
 sys.path.append(os.path.abspath('..'))
 from rnn_class.gru import GRU
-from pos_baseline import get_data
+from nlp_class2.pos_baseline import get_data
 from sklearn.utils import shuffle
-from util import init_weight
+from nlp_class2.util import init_weight
 from datetime import datetime
 from sklearn.metrics import f1_score
 
@@ -89,7 +89,7 @@ class RNN:
         costs = []
         sequence_indexes = range(N)
         n_total = sum(len(y) for y in Y)
-        for i in xrange(epochs):
+        for i in range(epochs):
             t0 = datetime.now()
             sequence_indexes = shuffle(sequence_indexes)
             n_correct = 0
@@ -103,7 +103,7 @@ class RNN:
                 if it % 200 == 0:
                     sys.stdout.write("j/N: %d/%d correct rate so far: %f, cost so far: %f\r" % (it, N, float(n_correct)/n_total, cost))
                     sys.stdout.flush()
-            print "i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0)
+            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
             costs.append(cost)
 
         if show_fig:
@@ -132,10 +132,10 @@ def main():
     V = len(word2idx) + 1
     rnn = RNN(10, [10], V)
     rnn.fit(Xtrain, Ytrain)
-    print "train score:", rnn.score(Xtrain, Ytrain)
-    print "test score:", rnn.score(Xtest, Ytest)
-    print "train f1:", rnn.f1_score(Xtrain, Ytrain)
-    print "test f1:", rnn.f1_score(Xtest, Ytest)
+    print("train score:", rnn.score(Xtrain, Ytrain))
+    print("test score:", rnn.score(Xtest, Ytest))
+    print("train f1:", rnn.f1_score(Xtrain, Ytrain))
+    print("test f1:", rnn.f1_score(Xtest, Ytest))
     
 
 if __name__ == '__main__':

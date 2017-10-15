@@ -67,12 +67,11 @@ class RNN:
         self.train_op = theano.function(
             inputs=[thX, thY, thStartPoints],
             outputs=[cost, prediction],
-            updates=updates
-        )
+            updates=updates)
 
         costs = []
+        t0 = datetime.now()
         for i in range(epochs):
-            t0 = datetime.now()
             X = shuffle(X)
             n_correct = 0
             n_total = 0
@@ -111,10 +110,11 @@ class RNN:
                     n_correct += 1
 
             if (i % 10 == 0):
-                print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
+                print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "elapsed time:", (datetime.now() - t0))
+                t0 = datetime.now()
             costs.append(cost)
 
-        print("final cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
+        print("final cost:", cost, "correct rate:", n_correct /n_total)
 
         if show_fig:
             plt.plot(costs)
@@ -131,7 +131,7 @@ def train_wikipedia(we_file='word_embeddings.npy', w2i_file='wikipedia_word2idx.
     print("finished retrieving data")
     print("vocab size:", len(word2idx), "number of sentences:", len(sentences))
     rnn = RNN(30, [30], len(word2idx))
-    rnn.fit(sentences, show_fig=True, activation=T.nnet.relu, **kwargs)
+    rnn.fit(sentences, show_fig=True, **kwargs)#activation=T.nnet.relu, **kwargs)
 
     np.save(we_file, rnn.We.get_value())
     with open(w2i_file, 'w') as f:

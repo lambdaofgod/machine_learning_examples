@@ -124,7 +124,7 @@ class RecursiveNN:
             n_total = sum(len(words) for words, _, _, _ in trees)
         else:
             n_total = N
-        for i in xrange(epochs):
+        for i in range(epochs):
             t0 = datetime.now()
             sequence_indexes = shuffle(sequence_indexes)
             n_correct = 0
@@ -141,7 +141,7 @@ class RecursiveNN:
                 # print "target shape:", t.shape
                 # exit()
                 if np.isnan(c):
-                    print "Cost is nan! Let's stop here. Why don't you try decreasing the learning rate?"
+                    print("Cost is nan! Let's stop here. Why don't you try decreasing the learning rate?")
                     exit()
                 cost += c
                 if train_inner_nodes:
@@ -152,7 +152,7 @@ class RecursiveNN:
                 if it % 1 == 0:
                     sys.stdout.write("j/N: %d/%d correct rate so far: %f, cost so far: %f\r" % (it, N, float(n_correct)/n_total, cost))
                     sys.stdout.flush()
-            print "i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0)
+            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
             costs.append(cost)
 
         plt.plot(costs)
@@ -167,7 +167,7 @@ class RecursiveNN:
             # if idx2word:
             #     print_sentence(words, idx2word)
             #     print "label:", lab[-1], "pred:", p[-1]
-        print "n_correct:", n_correct, "n_total:", n_total,
+        print("n_correct:", n_correct, "n_total:", n_total,)
         return float(n_correct) / n_total
 
 
@@ -225,7 +225,7 @@ def print_sentence(words, idx2word):
     # print sentence, "label:", tree.label
     for w in words:
         if w >= 0:
-            print idx2word[w],
+            print(idx2word[w],)
 
 
 def main(is_binary=True):
@@ -253,7 +253,7 @@ def main(is_binary=True):
     n_pos = sum(t[3][-1] for t in train)
     # print "num pos train:", n_pos
     # idx2word = {v:k for k, v in word2idx.iteritems()}
-    # for i in xrange(4):
+    # for i in range(4):
     #     words, _, _, labels = train[i]
     #     print_sentence(words, idx2word)
     #     print "label:", labels[-1]
@@ -261,14 +261,14 @@ def main(is_binary=True):
     test = test[:100]
 
     V = len(word2idx)
-    print "vocab size:", V
+    print("vocab size:", V)
     D = 10
     K = 2 if is_binary else 5
 
     model = RecursiveNN(V, D, K)
     model.fit(train, learning_rate=1e-2, reg=1e-2, mu=0, epochs=30, activation=T.tanh, train_inner_nodes=False)
-    print "train accuracy:", model.score(train)
-    print "test accuracy:", model.score(test)
+    print("train accuracy:", model.score(train))
+    print("test accuracy:", model.score(test))
 
 
 if __name__ == '__main__':

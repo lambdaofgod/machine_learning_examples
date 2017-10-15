@@ -35,7 +35,7 @@ def main():
         for i in sentence:
             A[i,j] += 1
         j += 1
-    print "finished getting raw counts"
+    print("finished getting raw counts")
 
     transformer = TfidfTransformer()
     A = transformer.fit_transform(A)
@@ -49,11 +49,11 @@ def main():
     tsne = TSNE()
     Z = tsne.fit_transform(A)
     plt.scatter(Z[:,0], Z[:,1])
-    for i in xrange(V):
+    for i in range(V):
         try:
             plt.annotate(s=idx2word[i].encode("utf8"), xy=(Z[i,0], Z[i,1]))
         except:
-            print "bad string:", idx2word[i]
+            print("bad string:", idx2word[i])
     plt.show()
 
     # create a higher-D word embedding, try word analogies

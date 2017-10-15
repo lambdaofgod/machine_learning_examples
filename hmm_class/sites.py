@@ -19,14 +19,14 @@ for k, v in transitions.iteritems():
     transitions[k] = v / row_sums[s]
 
 # initial state distribution
-print "initial state distribution:"
+print("initial state distribution:")
 for k, v in transitions.iteritems():
     s, e = k
     if s == '-1':
-        print e, v
+        print(e, v)
 
 # which page has the highest bounce?
 for k, v in transitions.iteritems():
     s, e = k
     if e == 'B':
-        print "bounce rate for %s: %s" % (s, v)
+        print("bounce rate for %s: %s" % (s, v))

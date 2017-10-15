@@ -18,7 +18,7 @@ class HMMClassifier:
         K = len(set(Y)) # number of classes - assume 0..K-1
         self.models = []
         self.priors = []
-        for k in xrange(K):
+        for k in range(K):
             # gather all the training data for this class
             thisX = [x for x, y in zip(X, Y) if y == k]
             C = len(thisX)
@@ -56,7 +56,7 @@ def get_data():
         for line in open(fn):
             line = line.rstrip()
             if line:
-                print line
+                print(line)
                 # tokens = remove_punctuation(line.lower()).split()
                 tokens = get_tags(line)
                 if len(tokens) > 1:
@@ -69,18 +69,18 @@ def get_data():
                     X.append(sequence)
                     Y.append(label)
                     count += 1
-                    print count
+                    print(count)
                     if count >= 50:
                         break
-    print "Vocabulary:", word2idx.keys()
+    print("Vocabulary:", word2idx.keys())
     return X, Y, current_idx
         
 
 def main():
     X, Y, V = get_data()
     # print "Finished loading data"
-    print "len(X):", len(X)
-    print "Vocabulary size:", V
+    print("len(X):", len(X))
+    print("Vocabulary size:", V)
     X, Y = shuffle(X, Y)
     N = 20 # number to test
     Xtrain, Ytrain = X[:-N], Y[:-N]
@@ -88,7 +88,7 @@ def main():
 
     model = HMMClassifier()
     model.fit(Xtrain, Ytrain, V)
-    print "Score:", model.score(Xtest, Ytest)
+    print("Score:", model.score(Xtest, Ytest))
 
 
 if __name__ == '__main__':
