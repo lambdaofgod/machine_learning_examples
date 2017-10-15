@@ -44,7 +44,7 @@ class Model(object):
                     word_freq[xj] = 0
                 word_freq[xj] += 1
         self.Pnw = np.zeros(self.V)
-        for j in xrange(2, self.V): # 0 and 1 are the start and end tokens, we won't use those here
+        for j in range(2, self.V): # 0 and 1 are the start and end tokens, we won't use those here
             self.Pnw[j] = (word_freq[j] / float(word_count))**0.75
         # print "self.Pnw[2000]:", self.Pnw[2000]
         assert(np.all(self.Pnw[2:] > 0))
@@ -58,7 +58,7 @@ class Model(object):
             # print "saving -- context id:", context_idx, "value:", self.Pnw[context_idx]
             self.Pnw[context_idx] = 0
         neg_samples = np.random.choice(
-            xrange(self.V),
+            range(self.V),
             size=num_neg_samples, # this is arbitrary - number of negative samples to take
             replace=False,
             p=self.Pnw / np.sum(self.Pnw),
@@ -84,11 +84,11 @@ class Model(object):
         costs = []
         cost_per_epoch = []
         sample_indices = range(N)
-        for i in xrange(epochs):
+        for i in range(epochs):
             t0 = datetime.now()
             sample_indices = shuffle(sample_indices)
             cost_per_epoch_i = []
-            for it in xrange(N):
+            for it in range(N):
                 j = sample_indices[it]
                 x = X[j] # one sentence
 
@@ -98,7 +98,7 @@ class Model(object):
 
                 cj = []
                 n = len(x)
-                # for jj in xrange(n):
+                # for jj in range(n):
                 ########## try one random window per sentence ###########
                 jj = np.random.choice(n)
                 
@@ -155,7 +155,7 @@ class Model(object):
 
             epoch_cost = np.mean(cost_per_epoch_i)
             cost_per_epoch.append(epoch_cost)
-            print "time to complete epoch %d:" % i, (datetime.now() - t0), "cost:", epoch_cost
+            print("time to complete epoch %d:" % i, (datetime.now() - t0), "cost:", epoch_cost)
         plt.plot(costs)
         plt.title("Numpy costs")
         plt.show()
@@ -213,11 +213,11 @@ class Model(object):
         costs = []
         cost_per_epoch = []
         sample_indices = range(N)
-        for i in xrange(epochs):
+        for i in range(epochs):
             t0 = datetime.now()
             sample_indices = shuffle(sample_indices)
             cost_per_epoch_i = []
-            for it in xrange(N):
+            for it in range(N):
                 j = sample_indices[it]
                 x = X[j] # one sentence
 
@@ -227,7 +227,7 @@ class Model(object):
 
                 cj = []
                 n = len(x)
-                # for jj in xrange(n):
+                # for jj in range(n):
 
                 #     start = max(0, jj - self.context_sz)
                 #     end = min(n, jj + 1 + self.context_sz)
@@ -264,7 +264,7 @@ class Model(object):
 
             epoch_cost = np.mean(cost_per_epoch_i)
             cost_per_epoch.append(epoch_cost)
-            print "time to complete epoch %d:" % i, (datetime.now() - t0), "cost:", epoch_cost
+            print("time to complete epoch %d:" % i, (datetime.now() - t0), "cost:", epoch_cost)
 
         self.W1 = W1.get_value()
         self.W2 = W2.get_value()
@@ -309,7 +309,7 @@ def find_analogies(w1, w2, w3, concat=True, we_file='w2v_model.npz', w2i_file='w
 
     if concat:
         We = np.hstack([W1, W2.T])
-        print "We.shape:", We.shape
+        print("We.shape:", We.shape)
         assert(V == We.shape[0])
     else:
         We = (W1 + W2.T) / 2
@@ -319,7 +319,7 @@ def find_analogies(w1, w2, w3, concat=True, we_file='w2v_model.npz', w2i_file='w
 if __name__ == '__main__':
     main(use_brown=True)
     for concat in (True, False):
-        print "** concat:", concat
+        print("** concat:", concat)
         find_analogies('king', 'man', 'woman', concat=concat)
         find_analogies('france', 'paris', 'london', concat=concat)
         find_analogies('france', 'paris', 'rome', concat=concat)

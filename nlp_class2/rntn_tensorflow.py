@@ -75,7 +75,7 @@ class RNTN:
         all_labels = []
         i = 0
         N = len(trees)
-        print "Compiling ops"
+        print("Compiling ops")
         for t in trees:
             i += 1
             sys.stdout.write("%d/%d\r" % (i, N))
@@ -105,7 +105,7 @@ class RNTN:
         with tf.Session() as session:
             session.run(init)
 
-            for i in xrange(epochs):
+            for i in range(epochs):
                 train_ops, costs, predictions, all_labels = shuffle(train_ops, costs, predictions, all_labels)
                 epoch_cost = 0
                 n_correct = 0
@@ -198,7 +198,7 @@ class RNTN:
 
             i = 0
             N = len(trees)
-            print "Compiling ops"
+            print("Compiling ops")
             for t in trees:
 
                 i += 1
@@ -240,8 +240,8 @@ def main():
 
     model = RNTN(V, D, K, tf.nn.relu)
     model.fit(train)
-    print "train accuracy:", model.score(None)
-    print "test accuracy:", model.score(test)
+    print("train accuracy:", model.score(None))
+    print("test accuracy:", model.score(test))
 
 
 if __name__ == '__main__':

@@ -56,7 +56,7 @@ class TNN:
         all_labels = []
         i = 0
         N = len(trees)
-        print "Compiling ops"
+        print("Compiling ops")
         for t in trees:
             i += 1
             sys.stdout.write("%d/%d\r" % (i, N))
@@ -86,7 +86,7 @@ class TNN:
         with tf.Session() as session:
             session.run(init)
 
-            for i in xrange(epochs):
+            for i in range(epochs):
                 t0 = datetime.now()
 
                 train_ops, costs, predictions, all_labels = shuffle(train_ops, costs, predictions, all_labels)
@@ -107,7 +107,7 @@ class TNN:
                         sys.stdout.write("j: %d, N: %d, c: %f\r" % (j, N, c))
                         sys.stdout.flush()
 
-                print "epoch:", i, "cost:", epoch_cost, "elapsed time:", (datetime.now() - t0)
+                print("epoch:", i, "cost:", epoch_cost, "elapsed time:", (datetime.now() - t0))
 
                 per_epoch_costs.append(epoch_cost)
                 correct_rates.append(n_correct / float(n_total))
@@ -173,7 +173,7 @@ class TNN:
 
             i = 0
             N = len(trees)
-            print "Compiling ops"
+            print("Compiling ops")
             for t in trees:
 
                 i += 1
@@ -211,8 +211,8 @@ def main():
 
     model = TNN(V, D, K, tf.nn.relu)
     model.fit(train)
-    print "train accuracy:", model.score(None)
-    print "test accuracy:", model.score(test)
+    print("train accuracy:", model.score(None))
+    print("test accuracy:", model.score(test))
 
 
 if __name__ == '__main__':

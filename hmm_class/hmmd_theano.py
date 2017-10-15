@@ -27,7 +27,7 @@ class HMM:
         if V is None:
             V = max(max(x) for x in X) + 1
         N = len(X)
-        print "number of train samples:", N
+        print("number of train samples:", N)
 
         pi0 = np.ones(self.M) / self.M # initial state distribution
         A0 = random_normalized(self.M, self.M) # state transition matrix
@@ -63,11 +63,11 @@ class HMM:
         # )
 
         costs = []
-        for it in xrange(max_iter):
+        for it in range(max_iter):
             if it % print_period == 0:
-                print "it:", it
+                print("it:", it)
             
-            for n in xrange(N):
+            for n in range(N):
                 # print "about to get the cost"
                 # this would of course be much faster if we didn't do this on
                 # every iteration of the loop
@@ -76,10 +76,10 @@ class HMM:
                 # print "training on:", X[n]
                 train_op(X[n])
 
-        print "A:", self.A.get_value()
-        print "B:", self.B.get_value()
-        print "pi:", self.pi.get_value()
-        print "len(costs):", len(costs)
+        print("A:", self.A.get_value())
+        print("B:", self.B.get_value())
+        print("pi:", self.pi.get_value())
+        print("len(costs):", len(costs))
         plt.plot(costs)
         plt.show()
 
@@ -135,7 +135,7 @@ def fit_coin():
     hmm = HMM(2)
     hmm.fit(X)
     L = hmm.get_cost_multi(X).sum()
-    print "LL with fitted params:", L
+    print("LL with fitted params:", L)
 
     # try true values
     pi = np.array([0.5, 0.5])
@@ -143,7 +143,7 @@ def fit_coin():
     B = np.array([[0.6, 0.4], [0.3, 0.7]])
     hmm.set(pi, A, B)
     L = hmm.get_cost_multi(X).sum()
-    print "LL with true params:", L
+    print("LL with true params:", L)
 
 
 if __name__ == '__main__':

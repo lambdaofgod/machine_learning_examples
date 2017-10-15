@@ -13,22 +13,22 @@ M, V = B.shape
 
 
 def generate_sequence(N):
-    s = np.random.choice(xrange(M), p=pi) # initial state
-    x = np.random.choice(xrange(V), p=B[s]) # initial observation
+    s = np.random.choice(range(M), p=pi) # initial state
+    x = np.random.choice(range(V), p=B[s]) # initial observation
     sequence = [x]
-    for n in xrange(N-1):
-        s = np.random.choice(xrange(M), p=A[s]) # next state
-        x = np.random.choice(xrange(V), p=B[s]) # next observation
+    for n in range(N-1):
+        s = np.random.choice(range(M), p=A[s]) # next state
+        x = np.random.choice(range(V), p=B[s]) # next observation
         sequence.append(x)
     return sequence
 
 
 def main():
     with open('coin_data.txt', 'w') as f:
-        for n in xrange(50):
+        for n in range(50):
             sequence = generate_sequence(30)
             sequence = ''.join(symbol_map[s] for s in sequence)
-            print sequence
+            print(sequence)
             f.write("%s\n" % sequence)
 
 

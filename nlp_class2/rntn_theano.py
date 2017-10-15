@@ -124,7 +124,7 @@ class RecursiveNN:
             n_total = sum(len(words) for words, _, _, _ in trees)
         else:
             n_total = N
-        for i in xrange(epochs):
+        for i in range(epochs):
             t0 = datetime.now()
             sequence_indexes = shuffle(sequence_indexes)
             n_correct = 0
@@ -134,7 +134,7 @@ class RecursiveNN:
                 words, left, right, lab = trees[j]
                 c, p = self.train_op(words, left, right, lab)
                 if np.isnan(c):
-                    print "Cost is nan! Let's stop here. Why don't you try decreasing the learning rate?"
+                    print("Cost is nan! Let's stop here. Why don't you try decreasing the learning rate?")
                     exit()
                 cost += c
                 if train_inner_nodes:
@@ -145,7 +145,7 @@ class RecursiveNN:
                 if it % 1 == 0:
                     sys.stdout.write("j/N: %d/%d correct rate so far: %f, cost so far: %f\r" % (it, N, float(n_correct)/n_total, cost))
                     sys.stdout.flush()
-            print "i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0)
+            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
             costs.append(cost)
 
         plt.plot(costs)
@@ -239,16 +239,16 @@ def main(is_binary=True):
     # print "n_pos test:", n_pos
 
     V = len(word2idx)
-    print "vocab size:", V
+    print("vocab size:", V)
     D = 20
     K = 2 if is_binary else 5
 
     model = RecursiveNN(V, D, K)
     model.fit(train)
-    print "train accuracy:", model.score(train)
-    print "test accuracy:", model.score(test)
-    print "train f1:", model.f1_score(train)
-    print "test f1:", model.f1_score(test)
+    print("train accuracy:", model.score(train))
+    print("test accuracy:", model.score(test))
+    print("train f1:", model.f1_score(train))
+    print("test f1:", model.f1_score(test))
 
 
 if __name__ == '__main__':

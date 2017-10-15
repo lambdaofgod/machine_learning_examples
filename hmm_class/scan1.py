@@ -26,4 +26,4 @@ square_op = theano.function(
 
 o_val = square_op(np.array([1, 2, 3, 4, 5]))
 
-print "output:", o_val
+print("output:", o_val)

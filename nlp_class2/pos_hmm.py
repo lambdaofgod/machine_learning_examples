@@ -9,7 +9,7 @@ import sys
 sys.path.append(os.path.abspath('..'))
 from hmm_class.hmmd_scaled import HMM
 
-from pos_baseline import get_data
+from nlp_class2.pos_baseline import get_data
 from sklearn.utils import shuffle
 from datetime import datetime
 from sklearn.metrics import f1_score
@@ -47,7 +47,7 @@ def main(smoothing=1e-1):
     pi = np.zeros(M)
     for y in Ytrain:
         pi[y[0]] += 1
-        for i in xrange(len(y)-1):
+        for i in range(len(y)-1):
             A[y[i], y[i+1]] += 1
     # turn it into a probability matrix
     A /= A.sum(axis=1, keepdims=True)
@@ -77,10 +77,10 @@ def main(smoothing=1e-1):
         Ptest.append(p)
 
     # print results
-    print "train accuracy:", accuracy(Ytrain, Ptrain)
-    print "test accuracy:", accuracy(Ytest, Ptest)
-    print "train f1:", total_f1_score(Ytrain, Ptrain)
-    print "test f1:", total_f1_score(Ytest, Ptest)
+    print("train accuracy:", accuracy(Ytrain, Ptrain))
+    print("test accuracy:", accuracy(Ytest, Ptest))
+    print("train f1:", total_f1_score(Ytrain, Ptrain))
+    print("test f1:", total_f1_score(Ytest, Ptest))
 
 if __name__ == '__main__':
     main()

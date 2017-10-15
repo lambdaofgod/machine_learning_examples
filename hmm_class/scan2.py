@@ -27,4 +27,4 @@ fibonacci = theano.function(
 
 o_val = fibonacci(8)
 
-print "output:", o_val
+print("output:", o_val)

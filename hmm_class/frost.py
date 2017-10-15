@@ -22,7 +22,7 @@ for line in open('robert_frost.txt'):
     tokens = remove_punctuation(line.rstrip().lower()).split()
 
     T = len(tokens)
-    for i in xrange(T):
+    for i in range(T):
         t = tokens[i]
         if i == 0:
             # measure the distribution of the first word
@@ -76,7 +76,7 @@ def sample_word(d):
     assert(False) # should never get here
 
 def generate():
-    for i in xrange(4):
+    for i in range(4):
         sentence =[]
 
         # initial word
@@ -95,7 +95,7 @@ def generate():
             sentence.append(w2)
             w0 = w1
             w1 = w2
-        print ' '.join(sentence)
+        print(' '.join(sentence))
 
 generate()
 

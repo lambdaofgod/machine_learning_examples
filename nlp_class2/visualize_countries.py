@@ -24,7 +24,7 @@ def main(we_file='glove_model_50.npz', w2i_file='glove_word2idx_50.json'):
     Z = tsne.fit_transform(We)
     Z = Z[idx]
     plt.scatter(Z[:,0], Z[:,1])
-    for i in xrange(len(words)):
+    for i in range(len(words)):
         plt.annotate(s=words[i], xy=(Z[i,0], Z[i,1]))
     plt.show()
 
