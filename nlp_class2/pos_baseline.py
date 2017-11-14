@@ -141,7 +141,7 @@ def get_data(split_sequences=False):
         Xtest = currentX
         Ytest = currentY
 
-    return Xtrain, Ytrain, Xtest, Ytest, word2idx
+    return Xtrain, Ytrain, Xtest, Ytest, word2idx, tag2idx
 
 def main():
     Xtrain, Ytrain, Xtest, Ytest, word2idx = get_data()

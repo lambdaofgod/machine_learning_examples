@@ -14,7 +14,7 @@ from sklearn.utils import shuffle
 from nlp_class2.util import init_weight
 from datetime import datetime
 from sklearn.metrics import f1_score
-
+from nlp_class2.updates import rmsprop_updates
 
 class RNN:
     def __init__(self, D, hidden_layer_sizes, V, K):
@@ -23,7 +23,7 @@ class RNN:
         self.V = V
         self.K = K
 
-    def fit(self, X, Y, learning_rate=1e-4, mu=0.99, epochs=30, show_fig=True, activation=T.nnet.relu, RecurrentUnit=GRU, normalize=False):
+    def fit(self, X, Y, learning_rate=1e-4, mu=0.99, epochs=20, show_fig=True, activation=T.nnet.relu, RecurrentUnit=GRU, normalize=False):
         D = self.D
         V = self.V
         N = len(X)
@@ -64,8 +64,6 @@ class RNN:
         prediction = T.argmax(py_x, axis=1)
         
         cost = -T.mean(T.log(py_x[T.arange(thY.shape[0]), thY]))
-        grads = T.grad(cost, self.params)
-        dparams = [theano.shared(p.get_value()*0) for p in self.params]
 
         dWe = theano.shared(self.We.get_value()*0)
         gWe = T.grad(cost, self.We)
@@ -74,10 +72,10 @@ class RNN:
         if normalize:
             We_update /= We_update.norm(2)
 
+
         updates = [
-            (p, p + mu*dp - learning_rate*g) for p, dp, g in zip(self.params, dparams, grads)
-        ] + [
-            (dp, mu*dp - learning_rate*g) for dp, g in zip(dparams, grads)
+            update for param in self.params
+            for update in rmsprop_updates(cost, param, learning_rate, mu)
         ] + [
             (self.We, We_update), (dWe, dWe_update)
         ]
@@ -111,7 +109,7 @@ class RNN:
                 if it % 200 == 0:
                     sys.stdout.write("j/N: %d/%d correct rate so far: %f, cost so far: %f\r" % (it, N, float(n_correct)/n_total, cost))
                     sys.stdout.flush()
-            print("i:", i, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
+            print("i:", i+1, "cost:", cost, "correct rate:", (float(n_correct)/n_total), "time for epoch:", (datetime.now() - t0))
             costs.append(cost)
 
         if show_fig:

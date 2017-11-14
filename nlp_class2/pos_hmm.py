@@ -1,17 +1,14 @@
 # Course URL:
 # https://deeplearningcourses.com/c/natural-language-processing-with-deep-learning-in-python
 # https://udemy.com/natural-language-processing-with-deep-learning-in-python
-import numpy as np
-import matplotlib.pyplot as plt
-
 import os
 import sys
+
+import numpy as np
 sys.path.append(os.path.abspath('..'))
 from hmm_class.hmmd_scaled import HMM
 
 from nlp_class2.pos_baseline import get_data
-from sklearn.utils import shuffle
-from datetime import datetime
 from sklearn.metrics import f1_score
 
 
